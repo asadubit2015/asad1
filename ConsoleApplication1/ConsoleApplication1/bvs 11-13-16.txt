@@ -1,0 +1,176 @@
+SELECT *FROM `vid_delivery_schedules` WHERE borrower_id=22243
+
+SELECT *FROM vid_videos WHERE ref_id=7225 AND bank_id=59      video_title='Delinquency'
+
+SELECT *FROM vid_videos vv JOIN vid_video_duration vvd ON vv.ref_id = vvd.video_id WHERE vv.bank_id=65
+
+SELECT video_title FROM vid_videos WHERE id=(SELECT id FROM vid_videos vv WHERE ref_id = 5705 AND bank_id = 65)
+
+SELECT * FROM vid_videos vv JOIN vid_video_duration vvd ON vv.id=vvd.video_id WHERE video_title='Delinquency' bank_id =65
+
+SELECT * FROM vid_video_duration vvd JOIN vid_videos vv ON vv.id=vvd.video_id WHERE bank_id=65
+
+SELECT COUNT(video_id) AS COUNT FROM vid_video_duration WHERE video_id=5706
+
+SELECT vv.video_title, vvd.video_id, vvd.video_duration, vvd.date_viewed, vvd.time_viewed FROM vid_videos vv JOIN vid_video_duration vvd ON vv.id=vvd.video_id WHERE user_id=4873
+
+SELECT *FROM vid_video_duration WHERE user_id=22243 AND video_id=9928
+SELECT *FROM vid_users WHERE user_type=104
+SELECT video_title FROM vid_videos WHERE id IN(9928,9363,9354,9354,9354,9354,9336,9268,9267,9267,9257,9257)
+
+
+SELECT vvd.video_id, vv.video_title, vvd.user_id, vvd.`date_viewed`, vvd.`time_viewed`, MAX(vvd.video_duration) AS video_duration  
+FROM vid_videos vv, vid_video_duration vvd 
+WHERE vvd.`video_id`= vv.`id` AND vvd.`user_id`=22243
+GROUP BY vvd.video_id, vv.video_title, vvd.user_id
+
+
+SELECT vvd.video_id, vv.video_title, COUNT(vvd.`video_duration`) AS vid_count, vvd.user_id, 
+vvd.`time_viewed`, vvd.`date_viewed`, MAX(vvd.video_duration) AS video_duration  
+FROM vid_videos vv, vid_video_duration vvd 
+WHERE vvd.`video_id`= vv.`id` AND vvd.`user_id`=22243 AND vvd.`date_viewed` BETWEEN '2016-02-17' AND '2016-02-19' 
+GROUP BY vvd.video_id, vv.video_title, vvd.user_id
+
+
+
+
+SELECT vvd.`user_id`, vvd.`video_id`, vv.`video_title`, vvd.`video_duration`, vvd.`time_viewed`, vvd.`date_viewed`
+FROM vid_video_duration vvd 
+INNER JOIN (
+	SELECT id, video_id, MAX(video_duration) AS video_duration
+	FROM vid_video_duration 
+	WHERE date_viewed BETWEEN '2016-02-17' AND '2016-02-22'	
+	GROUP BY video_id
+)vd ON vvd.`video_id`=vd.video_id AND vvd.`video_duration`=vd.video_duration 
+JOIN vid_videos vv ON vvd.`video_id` = vv.`id`
+WHERE vvd.user_id=22243 
+GROUP BY vvd.`user_id`, vvd.`video_id` 
+ORDER BY date_viewed
+
+
+*********************************
+
+
+SELECT vvd.video_id, vv.video_title, vvd.user_id, vvd.`date_viewed`, vvd.`time_viewed`, MAX(vvd.video_duration) 
+FROM vid_videos vv, vid_video_duration vvd 
+WHERE vvd.`video_id`= vv.`id`
+GROUP BY vvd.video_id, vv.video_title
+
+#select vd.video_duration, vd.date_viewed, vd.time_viewed from vid_video_duration vd where vd.video_duration = vvd.`video_duration`(
+
+SELECT video_id ,time_viewed, MAX(video_duration)
+FROM vid_video_duration 
+WHERE user_id = 22243 
+GROUP BY video_id
+
+
+SELECT vvd.video_id, vvd.`id`, vv.video_title, COUNT(vvd.`video_id`) AS vid_count, vvd.user_id, 
+MAX(vvd.video_duration) AS vid_duration, vvd.`date_viewed`, vvd.`time_viewed`
+FROM vid_videos vv, vid_video_duration vvd 
+WHERE vvd.`video_id`= vv.`id` 
+	AND vvd.`user_id`=22243
+	AND vvd.`date_viewed` BETWEEN '2016-02-17' AND '2016-02-22'	
+GROUP BY vvd.user_id, vvd.video_id, vv.video_title
+
+
+SELECT vvd.`user_id`, vvd.`video_id`, vid_count, vv.`video_title`, vvd.`uncomplete_video_duration`, vvd.`time_viewed`, vvd.`date_viewed`
+FROM vid_video_duration vvd 
+INNER JOIN (
+	SELECT id, video_id, MAX(uncomplete_video_duration) AS uncomplete_video_duration, COUNT(*) AS vid_count
+	FROM vid_video_duration 
+	WHERE date_viewed BETWEEN '2016-02-17' AND '2016-02-23'	
+	GROUP BY video_id
+)vd ON vvd.`video_id`=vd.video_id AND vvd.`uncomplete_video_duration`=vd.uncomplete_video_duration 
+JOIN vid_videos vv ON vvd.`video_id` = vv.`id`
+WHERE vvd.user_id=22243 
+GROUP BY vvd.`user_id`, vvd.`video_id` 
+ORDER BY date_viewed
+
+SELECT* FROM vid_video_duration WHERE user_id=22243	AND video_id=9354
+
+SELECT vvd.`user_id`, vvd.`video_id`, vvd.`video_duration`, vvd.`time_viewed`, vvd.`date_viewed` 
+FROM vid_video_duration vvd WHERE user_id=22243 AND vvd.`video_id`=9257
+
+SELECT vvd.video_id, vvd.`date_viewed`, vvd.`time_viewed`, vvd.`video_duration`
+FROM (SELECT vvd.user_id MAX(vvd.`video_duration`) FROM vid_video_duration  AS m GROUP BY vvd.`user_id`)
+INNER JOIN vid_video_join ON vvd vvd.`user_id`=m.user_id AND vvd.`video_id`=m.video_id
+
+SELECT vv.video_title, vvd.video_duration, vvd.video_id, vvd.date_viewed, vvd.time_viewed 
+FROM vid_videos vv JOIN vid_video_duration vvd ON vv.id=vvd.video_id 
+WHERE user_id=22243
+
+
+
+SELECT *FROM `vid_borrowers` WHERE user_id=22243
+SELECT *FROM `vid_loans` WHERE borrower_id=19142
+ 
+SELECT vl.id, vl.loan_number 
+FROM vid_loans vl
+JOIN vid_borrowers vb 
+	ON vl.borrower_id=vb.id
+WHERE vb.user_id=22243
+ 
+SELECT
+    `vid_loans`.`id`, `vid_loans`.`loan_number`, `vid_users`.`id`, `vid_users`.`first_name`, `vid_users`.`last_name`
+FROM
+    `vid_videos`, 
+    `vid_loans`
+    INNER JOIN `vid_borrowers` 
+        ON (`vid_loans`.`borrower_id` = `vid_borrowers`.`id`)
+WHERE `vid_users`.`id`=22243 AND `vid_videos`.`id`=9354
+GROUP BY `vid_users`.`id` 
+ 
+ 
+ 
+ 
+SELECT *FROM vid_delivery_schedules WHERE loan_id=212
+ 
+ SELECT  vl.loan_number
+    FROM vid_users vu 
+    JOIN vid_borrowers AS vb 
+         ON vb.user_id = vu.id 
+    JOIN vid_loans vl 
+          ON vl.borrower_id = vb.id
+    WHERE vu.user_type = 104
+                AND vu.bank_id = 65 
+                AND (vl.application_close_date > NOW() 
+                  OR ISNULL(vl.application_close_date))
+    ORDER BY vu.last_name,vu.first_name ASC
+           
+    
+SELECT vu.id, vu.first_name, vu.last_name, vl.borrower_id, vl.loan_number
+FROM vid_users vu
+    INNER JOIN vid_borrowers vb
+        ON (vb.user_id = vu.id)
+    INNER JOIN vid_loans vl 
+        ON (vl.borrower_id = vb.id)
+    WHERE vu.user_type=104 AND vu.bank_id=65  
+	AND (vl.application_close_date>NOW() OR ISNULL(vl.application_close_date))
+    ORDER BY vu.last_name, vu.first_name ASC	
+   
+   
+   SELECT *FROM `vid_milestones` WHERE milestone_title ='Approved With Conditions' AND bank_id=65 
+   SELECT *FROM `vid_milestones` WHERE milestone_title='Receipt of Appraisal' AND bank_id=65
+   SELECT *FROM `vid_milestones` WHERE milestone_title='Disclosure HUD-1' AND bank_id=65
+   SELECT *FROM `vid_milestones` WHERE milestone_title='Application Date' AND bank_id=65
+   SELECT *FROM `vid_milestones` WHERE milestone_title='Disclosure TIL' AND bank_id=65
+   SELECT *FROM `vid_milestones` WHERE milestone_title='Post Closing' AND bank_id=65
+   
+   
+SELECT vvd.user_id, vvd.video_id, vid_count, vv.video_title, vvd.watch_video_length, vvd.time_viewed, vvd.date_viewed
+	FROM vid_video_duration vvd 
+        INNER JOIN(
+        SELECT id, video_id, MAX(watch_video_length) AS watch_video_length, COUNT(*) AS vid_count
+		FROM vid_video_duration                    	
+		GROUP BY video_id
+		)vd ON vvd.video_id=vd.video_id AND vvd.watch_video_length=vd.watch_video_length 
+        JOIN vid_videos vv ON vvd.video_id = vv.id
+        WHERE vvd.user_id=$id 
+        GROUP BY vvd.user_id, vvd.video_id 
+        ORDER BY date_viewed   
+   
+   
+   
+   
+   
+
